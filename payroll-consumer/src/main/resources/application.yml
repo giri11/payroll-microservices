@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: payroll-consumer
+  
+  # Database Configuration
+  datasource:
+    url: jdbc:mysql://localhost:3307/payroll_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: payroll_user
+    password: payroll_password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  
+  # JPA Configuration
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+  
+  # Kafka Configuration
+  kafka:
+    bootstrap-servers: localhost:9093
+    consumer:
+      group-id: payroll-consumer-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+        spring.json.use.type.headers: false  # Don't use Java type headers
+        spring.json.value.default.type: com.payroll.consumer.dto.PayrollData  # Default type
+    topic:
+      payroll-data: payroll-data-topic
+
+# Logging Configuration
+logging:
+  level:
+    root: INFO
+    com.payroll.consumer: DEBUG
+    org.springframework.kafka: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+
+# Server Configuration
+server:
+  port: 8082

@@ -1,0 +1,47 @@
+spring:
+  application:
+    name: payroll-producer
+  
+  # Kafka Configuration
+  kafka:
+    bootstrap-servers: localhost:9093
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      # Prevent duplicate messages with idempotent producer
+      properties:
+        enable.idempotence: true      # ← Prevent duplicates at Kafka level
+        max.in.flight.requests.per.connection: 5
+        acks: all                      # Wait for all replicas
+        max.block.ms: 60000
+        request.timeout.ms: 60000
+        delivery.timeout.ms: 120000
+        linger.ms: 100
+        retries: 3
+        spring.json.add.type.headers: false  # Don't add Java type info (fix serialization)
+      acks: all
+      retries: 3
+    topic:
+      payroll-data: payroll-data-topic
+
+# Payroll Configuration
+payroll:
+  csv:
+    input-path: ./csv-files
+    processed-path: ./csv-files/processed
+  scheduler:
+    cron: "0 */5 * * * ?" # Run every 5 minutes
+    enabled: true
+
+# Logging Configuration
+logging:
+  level:
+    root: INFO
+    com.payroll.producer: DEBUG
+    org.springframework.kafka: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+
+# Server Configuration
+server:
+  port: 8083

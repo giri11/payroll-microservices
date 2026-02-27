@@ -1,0 +1,34 @@
+# Compiled class files
+*.class
+target/
+*.jar
+*.war
+*.ear
+
+# Log files
+*.log
+logs/
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+
+# Maven
+.mvn/
+mvnw
+mvnw.cmd
+
+# CSV files (keep sample, ignore processed)
+csv-files/processed/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker volumes data
+mysql-data/
+elasticsearch-data/
